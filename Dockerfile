@@ -11,16 +11,13 @@ RUN apt-get update && apt-get upgrade && apt-get install -y \
         curl \
         mongodb \
         bash \
-        git \ 
-        supervisor
+        git 
 
 # Remove lists
 RUN rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /var/log/supervisor && \
     apt-get autoremove
 
 # Install docker ext's
-# Configure, install and enable php extensions
 RUN docker-php-ext-install pdo_mysql zip gd zip
     
 # Install composer
@@ -40,4 +37,4 @@ RUN curl -sSL -o /usr/bin/phpunit https://phar.phpunit.de/phpunit.phar && chmod 
 
 WORKDIR /var/www
 
-CMD ["/usr/bin/supervisord"]
+CMD ["tail -f /dev/null"]
