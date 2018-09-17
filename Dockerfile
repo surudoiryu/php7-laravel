@@ -2,7 +2,8 @@ FROM php:7.2-fpm
 LABEL maintainer="Nigel Bloemendal <info@webbever.nl>"
 
 # Install depencies
-RUN apt-get update && apt-get upgrade && apt-get install -y \
+RUN apt-get update && \
+      apt-get install -y --no-install-recommends \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
@@ -11,11 +12,9 @@ RUN apt-get update && apt-get upgrade && apt-get install -y \
         curl \
         mongodb \
         bash \
-        git 
-
-# Remove lists
-RUN rm -rf /var/lib/apt/lists/* && \
-    apt-get autoremove
+        git && \
+      rm -rf /var/lib/apt/lists/* && \
+      apt-get autoremove
 
 # Install docker ext's
 RUN docker-php-ext-install pdo_mysql zip gd zip
@@ -37,4 +36,4 @@ RUN curl -sSL -o /usr/bin/phpunit https://phar.phpunit.de/phpunit.phar && chmod 
 
 WORKDIR /var/www
 
-CMD ["tail -f /dev/null"]
+CMD ["/usr/bin/php"]
