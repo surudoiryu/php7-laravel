@@ -17,7 +17,7 @@ RUN apt-get update && \
       apt-get autoremove
 
 # Install docker ext's
-RUN docker-php-ext-install pdo_mysql zip gd zip
+RUN docker-php-ext-install pdo_mysql zip gd zip unzip
     
 # Install composer
 RUN php -r "readfile('https://getcomposer.org/installer');" | php && \
