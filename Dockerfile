@@ -1,6 +1,10 @@
 FROM php:7.2-fpm
 LABEL maintainer="Nigel Bloemendal <info@webbever.nl>"
 
+# Add repositories
+RUN apt-get apt-get install software-properties-common && \
+    add-apt-repository ppa:certbot/certbot
+
 # Install depencies
 RUN apt-get update && apt-get upgrade && apt-get install -y \
         libfreetype6-dev \
@@ -10,7 +14,8 @@ RUN apt-get update && apt-get upgrade && apt-get install -y \
         mongodb \
         zip \
         bash \
-        git
+        git \
+        certbot
 
 # Install docker ext's
 RUN docker-php-ext-install -j$(nproc) iconv \
@@ -31,9 +36,8 @@ RUN XDEBUG_VERSION=2.6.1 && \
     
 # Install PHPUnit
 RUN curl -sSL -o /usr/bin/phpunit https://phar.phpunit.de/phpunit.phar && chmod +x /usr/bin/phpunit
-    
-# Install certs
-RUN mkdir -p /etc/ssl/certs && update-ca-certificates
+
+RUN certbot certonly
 
 WORKDIR /var/www
 HEALTHCHECK --interval=1m CMD curl -f http://localhost/ || exit 1
