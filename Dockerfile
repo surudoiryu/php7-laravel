@@ -15,15 +15,13 @@ RUN apt-get update && apt-get upgrade && apt-get install -y \
         supervisor
 
 # Remove lists
-RUN rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /var/log/supervisor
+RUN rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /var/log/supervisor && \
+    apt-get autoremove
 
 # Install docker ext's
 # Configure, install and enable php extensions
-RUN docker-php-ext-configure intl --with-icu-dir=/usr/local && \
-    docker-php-ext-install intl pdo pdo_mysql zip bcmath && \
-    docker-php-ext-enable opcache
+RUN docker-php-ext-install pdo_mysql zip gd zip
     
 # Install composer
 RUN php -r "readfile('https://getcomposer.org/installer');" | php && \
