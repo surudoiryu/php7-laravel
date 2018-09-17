@@ -6,17 +6,24 @@ RUN apt-get update && apt-get upgrade && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
+        zlib1g-dev \
+        wget \
         curl \
         mongodb \
-        zip \
         bash \
         git \ 
         supervisor
 
+# Remove lists
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /var/log/supervisor
+
 # Install docker ext's
-RUN docker-php-ext-install -j$(nproc) iconv \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd
+# Configure, install and enable php extensions
+RUN docker-php-ext-configure intl --with-icu-dir=/usr/local && \
+    docker-php-ext-install intl pdo pdo_mysql zip bcmath && \
+    docker-php-ext-enable opcache
     
 # Install composer
 RUN php -r "readfile('https://getcomposer.org/installer');" | php && \
@@ -35,4 +42,4 @@ RUN curl -sSL -o /usr/bin/phpunit https://phar.phpunit.de/phpunit.phar && chmod 
 
 WORKDIR /var/www
 
-CMD ["/usr/local/bin/php"]
+CMD ["/usr/bin/supervisord"]
