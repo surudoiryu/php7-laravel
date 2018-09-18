@@ -8,6 +8,7 @@ RUN apt-get update && \
         libjpeg62-turbo-dev \
         libpng-dev \
         zlib1g-dev \
+        libicu-dev \
         wget \
         curl \
         mongodb \
@@ -17,7 +18,12 @@ RUN apt-get update && \
       apt-get autoremove
 
 # Install docker ext's
-RUN docker-php-ext-install pdo_mysql zip gd zip unzip
+RUN docker-php-source extract \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-configure mysqli --with-mysqli=mysqlnd \
+    && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
+    && docker-php-ext-install pdo_mysql zip mbstring exif gd intl \
+    && docker-php-ext-enable opcache
     
 # Install composer
 RUN php -r "readfile('https://getcomposer.org/installer');" | php && \
@@ -36,4 +42,8 @@ RUN curl -sSL -o /usr/bin/phpunit https://phar.phpunit.de/phpunit.phar && chmod 
 
 WORKDIR /var/www
 
-CMD ["/usr/bin/php"]
+ENTRYPOINT ["/scripts/docker-entrypoint.sh"]
+
+CMD php-fpm
+
+EXPOSE 9000
