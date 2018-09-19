@@ -9,7 +9,12 @@ RUN apt-get update && \
         libicu-dev \
         curl \
         git \
-        unzip
+        unzip \ 
+        gnupg \
+        software-properties-common \
+        nodejs
+
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 
 # Install docker ext's
 RUN docker-php-source extract \
