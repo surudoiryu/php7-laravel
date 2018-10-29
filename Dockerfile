@@ -12,11 +12,11 @@ RUN apt-get update && \
         unzip \ 
         gnupg \
         software-properties-common \
-        nodejs
+        nodejs && \
+    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+    apt-get install -y npm && \
+    npm i -g bower gulp
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-
-RUN apt-get install -y npm 
 
 # Install docker ext's
 RUN docker-php-source extract \
