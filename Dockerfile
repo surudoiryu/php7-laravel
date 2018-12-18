@@ -1,9 +1,12 @@
 FROM php:7.2-fpm
 LABEL maintainer="Nigel Bloemendal <info@webbever.nl>"
 
+# Env variables
+ENV COMPOSER_CACHE_DIR=/dev/null
+
 # Install depencies
-RUN apt-get update && \
-      apt-get install -y \
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+    apt-get install -y \
         libpng-dev \
         zlib1g-dev \
         libicu-dev \
@@ -13,8 +16,6 @@ RUN apt-get update && \
         gnupg \
         software-properties-common \
         nodejs && \
-    curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
-    apt-get install -y npm && \
     npm i -g bower gulp
 
 
@@ -29,6 +30,7 @@ RUN docker-php-source extract \
 # Install composer
 RUN php -r "readfile('https://getcomposer.org/installer');" | php && \
    mv composer.phar /usr/bin/composer && \
-   chmod +x /usr/bin/composer
+   chmod +x /usr/bin/composer && \
+   composer global require hirak/prestissimo
 
 WORKDIR /var/www
