@@ -30,6 +30,7 @@ RUN docker-php-source extract \
 RUN php -r "readfile('https://getcomposer.org/installer');" | php && \
    mv composer.phar /usr/bin/composer && \
    chmod +x /usr/bin/composer
+
 # Env variables
 ENV COMPOSER_CACHE_DIR=/dev/null
 
